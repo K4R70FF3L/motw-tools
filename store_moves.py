@@ -32,20 +32,27 @@ def enter_move():
     return move
 
 
-def add(playbook, title, description, **kwargs):
+def add(playbook, title, description, lines, **kwargs):
     store = load_store()
     move = {}
     move['id'] = str(uuid.uuid4())
 
     move['playbook'] = playbook
+    move['title'] = title
+    move['description'] = description
+
+    if lines:
+        elements = lines.split('\n')
+        move['playbook'] = elements[0]
+        move['title'] = elements[1]
+        move['description'] = elements[2]
+
     while move['playbook'] == '':
         move['playbook'] = input('Playbook: ')
 
-    move['title'] = title
     while move['title'] == '':
         move['title'] = input('Title: ')
 
-    move['description'] = description
     while move['description'] == '':
         move['description'] = input('Description: ')
 
@@ -131,6 +138,7 @@ if __name__ == '__main__':
     add_parser.add_argument('-p', '--playbook', type=str, default='')
     add_parser.add_argument('-t', '--title', type=str, default='')
     add_parser.add_argument('-d', '--description', type=str, default='')
+    add_parser.add_argument('-l', '--lines', type=str)
     add_parser.set_defaults(command=add)
 
     remove_parser = subparsers.add_parser('remove')
